@@ -1,0 +1,31 @@
+/* =============================================================================
+   README Editor - Light Theme
+   ============================================================================= */
+
+.root {
+    /* Background Colors */
+    -content-bg: #f8f9fa;
+    -sidebar-bg: #ffffff;
+    -toolbar-bg: #ffffff;
+    -editor-bg: #ffffff;
+    -preview-bg: #ffffff;
+    -card-bg: #ffffff;
+    -hover-bg: rgba(0, 0, 0, 0.04);
+    -search-bg: #ffffff;
+    -input-bg: #f1f3f5;
+
+    /* Text Colors */
+    -text-primary: #1a1b1e;
+    -text-secondary: #5c5f66;
+    -text-muted: #909296;
+
+    /* Accent Colors */
+    -accent-color: #4c6ef5;
+    -accent-hover: #3b5bdb;
+    -accent-bg: rgba(76, 110, 245, 0.08);
+
+    /* Divider & Scrollbar */
+    -divider-color: #dee2e6;
+    -scrollbar-color: rgba(0, 0, 0, 0.15);
+    -scrollbar-hover: rgba(0, 0, 0, 0.25);
+}

@@ -1,0 +1,15 @@
+{
+  "name": "readmeeditor",
+  "version": "1.0.0",
+  "description": "A **production-ready Java desktop application** for creating, editing, previewing, saving, versioning, and managing `README.md` files.",
+  "main": "index.js",
+  "scripts": {
+    "start": "mvn javafx:run",
+    "build": "mvn clean package",
+    "test": "mvn test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

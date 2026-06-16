@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README Editor — Notion Mode</title>
+    <!-- Google Fonts: Inter for the ultimate Notion typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-theme">
+    
+    <div id="login-overlay" class="overlay active">
+        <!-- FAANG-style animated mesh gradient background blobs -->
+        <div class="blob-container">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+        <div class="login-card">
+            <div class="brand">
+                <span class="logo-emoji">📝</span>
+                <h2>README Editor</h2>
+                <p>Your workspace for production-ready READMEs</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username..." required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password..." required autocomplete="current-password">
+                </div>
+                <div class="form-group register-only hidden">
+                    <label for="email">Email (Optional)</label>
+                    <input type="email" id="email" placeholder="Enter your email..." autocomplete="email">
+                </div>
+                
+                <button type="submit" id="submit-btn" class="btn btn-primary">Sign In</button>
+            </form>
+            
+            <div class="auth-toggle">
+                <span id="toggle-text">Don't have an account?</span>
+                <a href="#" id="toggle-auth-btn">Sign Up</a>
+            </div>
+            
+            <div id="auth-error" class="auth-error hidden"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN WORKSPACE ==================== -->
+    <div id="app-container" class="hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="workspace-switcher">
+                    <div class="current-workspace" id="current-workspace-display">
+                        <span class="workspace-icon">🏢</span>
+                        <span class="workspace-name" id="workspace-name-display">Personal Workspace</span>
+                        <span class="dropdown-chevron">▼</span>
+                    </div>
+                    <div class="workspace-dropdown hidden" id="workspace-dropdown">
+                        <div class="workspace-dropdown-header">
+                            <span>Workspaces</span>
+                        </div>
+                        <div class="workspace-list" id="workspace-dropdown-list">
+                            <!-- Dynamic list of workspaces -->
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="btn-add-workspace">
+                            <span class="icon">➕</span> Create Workspace
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <button class="menu-item" id="btn-search">
+                    <span class="icon">🔍</span>
+                    <span>Search</span>
+                    <kbd class="shortcut">Ctrl K</kbd>
+                </button>
+                <button class="menu-item" id="btn-templates">
+                    <span class="icon">📋</span>
+                    <span>Templates</span>
+                </button>
+                <button class="menu-item" id="btn-new-doc">
+                    <span class="icon">➕</span>
+                    <span>Add a Page</span>
+                </button>
+            </div>
+
+            <div class="sidebar-docs-section">
+                <div class="section-title">Private Pages</div>
+                <div class="docs-list" id="docs-list">
+                    <!-- Dynamic Document items will be injected here -->
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="sidebar-btn" id="btn-theme-toggle">
+                    <span id="theme-icon">🌙</span>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+                <button class="sidebar-btn" id="btn-logout">
+                    <span>🚪</span>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Pane -->
+        <main class="editor-pane">
+            <!-- Topbar Navigation -->
+            <header class="topbar">
+                <div class="breadcrumbs">
+                    <button class="btn-sidebar-toggle" id="btn-sidebar-toggle" title="Toggle Sidebar">☰</button>
+                    <span class="folder-icon">📂</span>
+                    <span class="folder-name">Workspace</span>
+                    <span class="divider">/</span>
+                    <span class="current-doc-name" id="breadcrumb-doc-title">Untitled</span>
+                </div>
+                <div class="topbar-actions">
+                    <div class="presence-container" id="presence-users" title="Active users viewing this page"></div>
+                    <span class="autosave-indicator" id="autosave-status">✓ Saved</span>
+                    <button class="btn btn-secondary btn-sm" id="btn-versions">
+                        <span class="icon">🕐</span> History
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="btn-export">
+                        <span class="icon">📥</span> Export
+                    </button>
+                    <button class="btn btn-primary btn-sm" id="btn-save">
+                        <span>Save Version</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Notion Canvas Area -->
+            <div class="canvas">
+                <!-- Page Customization Header -->
+                <div class="page-meta">
+                    <div class="emoji-picker-trigger" id="doc-emoji">📝</div>
+                    <input type="text" id="doc-title-input" class="doc-title-input" placeholder="Untitled" />
+                    
+                    <!-- Tag Manager -->
+                    <div class="tags-container">
+                        <span class="tags-label">Tags:</span>
+                        <div class="tags-list" id="doc-tags">
+                            <!-- Dynamic Tags -->
+                        </div>
+                        <button class="btn-add-tag" id="btn-add-tag">+ Add tag</button>
+                    </div>
+                </div>
+
+                <!-- Editor Workspace (Split / Normal) -->
+                <div class="workspace-layout split-mode" id="workspace-layout">
+                    <!-- Text Area Input -->
+                    <div class="markdown-editor-container">
+                        <div class="pane-header">
+                            <span>Markdown Editor</span>
+                            <div class="pane-actions">
+                                <button class="btn-icon active" id="btn-layout-split" title="Split View">📊</button>
+                                <button class="btn-icon" id="btn-layout-edit" title="Editor Only">📝</button>
+                                <button class="btn-icon" id="btn-layout-preview" title="Preview Only">👁</button>
+                            </div>
+                        </div>
+                        <textarea id="markdown-input" placeholder="Start typing your Markdown here (Notion style)..."></textarea>
+                    </div>
+
+                    <!-- Live WebView HTML Preview -->
+                    <div class="markdown-preview-container">
+                        <div class="pane-header">
+                            <span>Preview</span>
+                        </div>
+                        <iframe id="preview-output" class="preview-iframe"></iframe>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== SEARCH MODAL ==================== -->
+    <div id="search-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <input type="text" id="search-input" placeholder="Search pages, headings, or content..." autofocus />
+                <button class="btn-close-modal" id="btn-close-search">✕</button>
+            </div>
+            <div class="search-results" id="search-results">
+                <!-- Dynamic Search Results -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TEMPLATES MODAL ==================== -->
+    <div id="templates-modal" class="modal-overlay hidden">
+        <div class="modal-card template-card-container">
+            <div class="modal-header">
+                <h3>Select a Template</h3>
+                <button class="btn-close-modal" id="btn-close-templates">✕</button>
+            </div>
+            <p class="modal-desc">Kickstart your documentation with pre-built Notion-styled layouts.</p>
+            <div class="templates-grid" id="templates-grid">
+                <!-- Dynamic templates list -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== VERSION HISTORY DRAWER ==================== -->
+    <div id="versions-drawer" class="drawer-overlay hidden">
+        <div class="drawer-card">
+            <div class="drawer-header">
+                <h3>Version History</h3>
+                <button class="btn-close-drawer" id="btn-close-versions">✕</button>
+            </div>
+            <div class="versions-list" id="versions-list">
+                <!-- Dynamic Version list -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DIFF MODAL ==================== -->
+    <div id="diff-modal" class="modal-overlay hidden">
+        <div class="modal-card diff-card">
+            <div class="modal-header">
+                <h3>Compare Versions</h3>
+                <button class="btn-close-modal" id="btn-close-diff">✕</button>
+            </div>
+            <div class="diff-output" id="diff-output">
+                <!-- Comparison results -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script loading -->
+    <script src="app.js"></script>
+</body>
+</html>

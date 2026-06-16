@@ -1,0 +1,31 @@
+/* =============================================================================
+   README Editor - Dark Theme
+   ============================================================================= */
+
+.root {
+    /* Background Colors */
+    -content-bg: #1a1b1e;
+    -sidebar-bg: #121316;
+    -toolbar-bg: #1e1f23;
+    -editor-bg: #1a1b1e;
+    -preview-bg: #ffffff;
+    -card-bg: #25262b;
+    -hover-bg: rgba(255, 255, 255, 0.06);
+    -search-bg: #25262b;
+    -input-bg: #25262b;
+
+    /* Text Colors */
+    -text-primary: #e4e5e7;
+    -text-secondary: #9b9ca3;
+    -text-muted: #6b6c73;
+
+    /* Accent Colors */
+    -accent-color: #6c8cff;
+    -accent-hover: #5a7ae8;
+    -accent-bg: rgba(108, 140, 255, 0.12);
+
+    /* Divider & Scrollbar */
+    -divider-color: #2e2f35;
+    -scrollbar-color: rgba(255, 255, 255, 0.15);
+    -scrollbar-hover: rgba(255, 255, 255, 0.25);
+}
