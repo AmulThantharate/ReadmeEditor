@@ -24,6 +24,74 @@
         <junit.version>5.10.2</junit.version>
     </properties>
 
+    <!-- NEXUS REPOSITORY CONFIGURATION -->
+    <repositories>
+        <!-- Internal Nexus Repository - Releases -->
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Releases</name>
+            <url>http://your-nexus-url:8081/repository/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- Internal Nexus Repository - Snapshots -->
+        <repository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshots</name>
+            <url>http://your-nexus-url:8081/repository/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+        </repository>
+
+        <!-- Central Repository (Default) -->
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
+    <!-- PLUGIN REPOSITORY -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus-releases</id>
+            <name>Nexus Releases</name>
+            <url>http://your-nexus-url:8081/repository/releases/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshots</name>
+            <url>http://your-nexus-url:8081/repository/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- DISTRIBUTION MANAGEMENT (for publishing to Nexus) -->
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Releases</name>
+            <url>http://your-nexus-url:8081/repository/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshots</name>
+            <url>http://your-nexus-url:8081/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencies>
         <!-- JavaFX -->
         <dependency>
