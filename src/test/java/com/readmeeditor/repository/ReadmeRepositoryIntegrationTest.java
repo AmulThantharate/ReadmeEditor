@@ -53,6 +53,9 @@ class ReadmeRepositoryIntegrationTest {
 
     @AfterAll
     static void cleanup() {
+        if (redisConfig != null) {
+            redisConfig.close();
+        }
         redisContainer.stop();
         // Clean up system properties to prevent affecting other tests
         System.clearProperty("redis.host");

@@ -48,6 +48,9 @@ class UserRepositoryIntegrationTest {
 
     @AfterAll
     static void cleanup() {
+        if (redisConfig != null) {
+            redisConfig.close();
+        }
         redisContainer.stop();
         System.clearProperty("redis.host");
         System.clearProperty("redis.port");
