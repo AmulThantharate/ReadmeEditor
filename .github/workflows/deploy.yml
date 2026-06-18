@@ -124,22 +124,22 @@ jobs:
         - run: mvn -q package -DskipTests
         - name: Start app and wait
           run: |
-            java -jar target/readme-editor.jar \
-              --server.port=8080 \
-              --redis.host=localhost \
-              --redis.port=6379 &
+            java -Dserver.port=8080 -Dredis.host=localhost -Dredis.port=6379 -jar target/readme-editor-1.0.0.jar --server &
+            echo $! > app.pid
 
             timeout 60 bash -c '		
-              until curl -fs http://localhost:8080/health; do
+              until curl -fs http://localhost:8080/api/health; do
                 sleep 2
               done
             '
         - name: Smoke test
           run: |
-            curl -f http://localhost:8080/health
-            curl -f http://localhost:8080/api/status
+            curl -f http://localhost:8080/api/health
+            curl -f http://localhost:8080/index.html
 
         - name: Stop the application
           run: |
-            pkill -f readme-editor.jar || true
+            if [ -f app.pid ]; then
+              kill $(cat app.pid)
+            fi
         
