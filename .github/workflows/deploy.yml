@@ -120,8 +120,11 @@ jobs:
           with:
             java-version: ${{ env.JAVA_VERSION }}
             distribution: 'temurin'
-            cache: 'maven'
-        - run: mvn -q package -DskipTests
+        - name: Download Artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: build-artifacts
+            path: target
         - name: Start app and wait
           run: |
             java -Dserver.port=8080 -Dredis.host=localhost -Dredis.port=6379 -jar target/readme-editor-1.0.0.jar --server &
