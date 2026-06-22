@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-uploads
+  namespace: readme-editor
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readme-editor-app
+  namespace: readme-editor
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    spec:
+      containers:
+        - name: app
+          image: readme-editor:1.0.0        
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: REDIS_HOST
+              value: redis                  
+            - name: REDIS_PORT
+              value: "6379"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /api/health             
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: app-uploads
+              mountPath: /app/uploads
+      volumes:
+        - name: app-uploads
+          persistentVolumeClaim:
+            claimName: app-uploads
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readme-editor-app
+  namespace: readme-editor
+  labels:
+    app.kubernetes.io/name: readme-editor-app
+    app.kubernetes.io/part-of: readme-editor
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: readme-editor-app
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
