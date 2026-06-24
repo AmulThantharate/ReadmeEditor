@@ -1,4 +1,4 @@
-name: Build, Test & Push to GHR
+name: Build, Test & Push to DOCKER
 
 on:
     pull_request:
@@ -36,8 +36,10 @@ jobs:
             java-version: ${{ env.JAVA_VERSION }}
             distribution: 'temurin'
             cache: 'maven'
+        - name: Resolve Maven dependencies
+          run: mvn -B -DskipTests dependency:go-offline
         - name: Build with Maven
-          run: mvn clean package -DskipTests
+          run: mvn -B clean package -DskipTests
           env:
             MAVEN_OPTS: -Xmx2048m
         - name: Upload Artifact
@@ -62,9 +64,9 @@ jobs:
             distribution: 'temurin'
             cache: 'maven'
         - name: Install Maven Dependencies
-          run: mvn dependency:resolve dependency:resolve-plugins
+          run: mvn -B dependency:go-offline dependency:resolve dependency:resolve-plugins
         - name: Display Dependecy Tree
-          run: mvn dependency:tree
+          run: mvn -B dependency:tree
 
   test:
     name: Run Tests
@@ -171,7 +173,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Tiry
+      - name: Install Trivy
         run: |
           curl -sfL \
           https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
@@ -179,16 +181,14 @@ jobs:
 
       - name: Run File System Scan
         run: |
-          trivy  fs . \
-          --format sarif \
-          --output trivy-results.sarif
-          --serverity CRITICAL,HIGH      
+          trivy fs . \
+            --format sarif \
+            --output trivy-results.sarif \
+            --severity CRITICAL,HIGH \
+            --exit-code 0
 
-      - name: Upload Trivy Scan Results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+      - name: Upload Trivy SARIF
+        if: always() && hashFiles('trivy-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-results.sarif
-
-  
-  
